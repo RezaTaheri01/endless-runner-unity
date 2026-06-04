@@ -50,6 +50,17 @@
                 },
                 {
                     "name": "",
+                    "id": "018d4e6d-5b19-4a60-a93b-f4ad3986648e",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "1ffe7c85-ce5e-44da-b705-00381db25a00",
                     "path": "<Gamepad>/leftStick",
                     "interactions": "",
