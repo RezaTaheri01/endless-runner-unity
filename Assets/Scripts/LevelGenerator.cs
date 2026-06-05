@@ -18,24 +18,42 @@ public class LevelGenerator : MonoBehaviour
     // Todo: Compare with screen size
     private void CompareWidestPart()
     {
-        Transform widest = levelPart[0];
-        float maxWidth = widest.GetComponent<Renderer>().bounds.size.x;
+        if (levelPart == null || levelPart.Length == 0) return;
 
-        for (int i = 1; i < levelPart.Length; i++)
+        float maxWidth = 0f;
+        bool foundValidPlatform = false;
+
+        for (int i = 0; i < levelPart.Length; i++)
         {
-            float width = levelPart[i].GetComponent<Renderer>().bounds.size.x;
-            if (width > maxWidth)
+            Transform platform = levelPart[i]?.Find("Platform");
+            if (platform != null)
             {
-                maxWidth = width;
+                Renderer renderer = platform.GetComponent<Renderer>();
+                if (renderer != null)
+                {
+                    float width = renderer.bounds.size.x;
+                    if (!foundValidPlatform || width > maxWidth)
+                    {
+                        maxWidth = width;
+                        foundValidPlatform = true;
+                    }
+                }
             }
         }
+
+        if (!foundValidPlatform) return;
+
+        // Consider using a configurable multiplier instead of magic number 5
+        float spawnDistance = maxWidth * 5f;
+
         if (distanceToSpawn < maxWidth)
         {
-            distanceToSpawn = maxWidth * 5;
+            distanceToSpawn = spawnDistance;
         }
+
         if (distanceToDelete < maxWidth)
         {
-            distanceToDelete = maxWidth * 5;
+            distanceToDelete = spawnDistance;
         }
     }
 
