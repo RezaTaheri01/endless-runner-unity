@@ -59,6 +59,9 @@ public class PlayerMovement : MonoBehaviour
     private float slideCooldownTimerCounter;
     private bool isSliding = false;
     private bool canSliding = true;
+    [SerializeField] private float ceilingCheckDistance = 0.2f;
+    [SerializeField] private LayerMask ceilingLayer;
+    private bool ceilingDetected = false;
     #endregion
 
     // Called when the script instance is being loaded (before Start)
@@ -88,15 +91,15 @@ public class PlayerMovement : MonoBehaviour
     {
         // Enable the input actions so they start listening for input
         jumpAction.action.Enable();
-        moveAction.action.Enable();
+        // moveAction.action.Enable();
         slideAction.action.Enable();
 
         // Subscribe to the performed event (triggered when input action is activated)
         jumpAction.action.performed += OnJump; // Jump when space/button is pressed
 
-        // Move when movement input is performed (key pressed) or canceled (key released)
-        moveAction.action.performed += OnMove;
-        moveAction.action.canceled += OnMove; // Also handle when input stops (key released)
+        // // Move when movement input is performed (key pressed) or canceled (key released)
+        // moveAction.action.performed += OnMove;
+        // moveAction.action.canceled += OnMove; // Also handle when input stops (key released)
 
         // Slide when slide input is performed
         slideAction.action.performed += OnSlide;
@@ -108,13 +111,13 @@ public class PlayerMovement : MonoBehaviour
     {
         // Unsubscribe from events to prevent memory leaks and null reference errors
         jumpAction.action.performed -= OnJump;
-        moveAction.action.performed -= OnMove;
-        moveAction.action.canceled -= OnMove;
+        // moveAction.action.performed -= OnMove;
+        // moveAction.action.canceled -= OnMove;
         slideAction.action.performed -= OnSlide;
 
         // Disable the input actions to stop listening for input
         jumpAction.action.Disable();
-        moveAction.action.Disable();
+        // moveAction.action.Disable();
         slideAction.action.Disable();
     }
 
@@ -124,6 +127,11 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!playerUnlocked)
             playerUnlocked = true;
+
+        if (isSliding && ceilingDetected)
+        {
+            return; // Prevent jumping if there's a ceiling above
+        }
 
         if (!isGrounded)
             if (canDoubleJump)
@@ -139,8 +147,16 @@ public class PlayerMovement : MonoBehaviour
         if (context.performed)
         {
             // Todo - Stop Sliding if player can jump not if player in narrow place
-            isSliding = false; // Stop sliding when jumping
-            slideCooldownTimerCounter = slideCooldownTimer; // Reset slide cooldown when jumping
+            if (isSliding)
+            {
+                isSliding = false; // Stop sliding when jumping
+                slideCooldownTimerCounter = slideCooldownTimer; // Reset slide cooldown when jumping
+            }
+            else
+            {
+                slideCooldownTimerCounter = 0; // Allow sliding immediately if not sliding
+            }
+
             canSliding = false; // Prevent sliding immediately after jumping
             isGrounded = false;
 
@@ -151,13 +167,13 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-    // Called when Move action is performed (key pressed) or canceled (key released)
-    private void OnMove(InputAction.CallbackContext context)
-    {
-        // Read the movement input value (Vector2: x = horizontal, y = vertical)
-        // For 2D platformers, we typically only use x value for left/right movement
-        moveInput = context.ReadValue<Vector2>();
-    }
+    // // Called when Move action is performed (key pressed) or canceled (key released)
+    // private void OnMove(InputAction.CallbackContext context)
+    // {
+    //     // Read the movement input value (Vector2: x = horizontal, y = vertical)
+    //     // For 2D platformers, we typically only use x value for left/right movement
+    //     moveInput = context.ReadValue<Vector2>();
+    // }
 
 
     private void OnSlide(InputAction.CallbackContext context)
@@ -173,12 +189,13 @@ public class PlayerMovement : MonoBehaviour
     // Called once per frame. If FPS changes, the frequency of Update calls changes.
     private void Update()
     {
-        CheckCollision();
+        AnimatorController();
 
         if (isSliding)
         {
-            slideTimerCounter -= Time.deltaTime;
-            if (slideTimerCounter <= 0)
+            slideTimerCounter = Mathf.Max(0, slideTimerCounter - Time.deltaTime);
+
+            if (slideTimerCounter <= 0 && !ceilingDetected)
             {
                 isSliding = false;
                 canSliding = false;
@@ -189,7 +206,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (!canSliding)
         {
-            slideCooldownTimerCounter -= Time.deltaTime;
+            slideCooldownTimerCounter = Mathf.Max(0, slideCooldownTimerCounter - Time.deltaTime);
             if (slideCooldownTimerCounter <= 0)
             {
                 canSliding = true;
@@ -203,12 +220,13 @@ public class PlayerMovement : MonoBehaviour
     // Default is 50 per second
     private void FixedUpdate()
     {
+
         if (!playerUnlocked)
         {
             return;
         }
 
-        AnimatorController();
+        CheckCollision();
 
         // Apply horizontal movement velocity
         if (isSliding)
@@ -222,31 +240,37 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
+    private void CheckCollision()
+    {
+        isGrounded = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, groundLayer);
+        ceilingDetected = Physics2D.Raycast(transform.position, Vector2.up, ceilingCheckDistance, ceilingLayer);
+        isNearWall = Physics2D.BoxCast(wallCheck.position, wallCheckSize, 0f, Vector2.zero, 0, wallLayer);
+
+        if (isGrounded)
+        {
+            canDoubleJump = true; // Reset double jump when grounded
+        }
+
+        // if (isNearWall)
+        // {
+        //     isSliding = false; // Stop sliding if near a wall
+        // }
+    }
+
+
     void OnDrawGizmosSelected()
     {
         Gizmos.color = isGrounded ? Color.green : Color.red;
         Gizmos.DrawLine(transform.position, transform.position + Vector3.down * groundCheckDistance);
+
+        Gizmos.color = ceilingDetected ? Color.red : Color.green;
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.up * ceilingCheckDistance);
+
         Gizmos.color = isNearWall ? Color.green : Color.red;
         Gizmos.DrawWireCube(wallCheck.position, wallCheckSize);
     }
 
 
-    private void CheckCollision()
-    {
-        isGrounded = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, groundLayer);
-        if (isGrounded)
-        {
-            canDoubleJump = true; // Reset double jump when grounded
-        }
-        isNearWall = Physics2D.BoxCast(wallCheck.position, wallCheckSize, 0f, Vector2.zero, 0, wallLayer);
-        if (isNearWall)
-        {
-            isSliding = false; // Stop sliding if near a wall
-        }
-    }
-
-
-    // Flip face by changing transform.localScale.x
     private void AnimatorController()
     {
         anim.SetBool("isGrounded", isGrounded);
@@ -254,16 +278,6 @@ public class PlayerMovement : MonoBehaviour
         anim.SetFloat("xVelocity", Mathf.Abs(rb.linearVelocity.x));
         anim.SetBool("canDoubleJump", canDoubleJump);
         anim.SetBool("isSliding", isSliding);
-
-
-        if (moveInput.x > 0)
-        {
-            transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
-        }
-        else if (moveInput.x < 0)
-        {
-            transform.localScale = new Vector3(-1, transform.localScale.y, transform.localScale.z);
-        }
     }
 
 }
