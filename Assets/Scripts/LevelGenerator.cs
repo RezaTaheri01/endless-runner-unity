@@ -15,7 +15,7 @@ public class LevelGenerator : MonoBehaviour
         CompareWidestPart();
     }
 
-    // Todo: Compare with screen size
+
     private void CompareWidestPart()
     {
         if (levelPart == null || levelPart.Length == 0) return;
@@ -65,17 +65,45 @@ public class LevelGenerator : MonoBehaviour
         GeneratePlatform();
     }
 
+    // private void GeneratePlatform()
+    // {
+    //     while (Vector2.Distance(playerTransform.position, nextPartPosition) < distanceToSpawn)
+    //     {
+    //         Transform part = levelPart[Random.Range(0, levelPart.Length)];
+
+    //         Vector2 newPosition = new Vector2(nextPartPosition.x - part.Find("StartPoint").position.x, 0);
+
+    //         Transform newPart = Instantiate(part, newPosition, transform.rotation, transform);
+
+    //         nextPartPosition = newPart.Find("EndPoint").position;
+    //     }
+    // }
+
     private void GeneratePlatform()
     {
         while (Vector2.Distance(playerTransform.position, nextPartPosition) < distanceToSpawn)
         {
             Transform part = levelPart[Random.Range(0, levelPart.Length)];
 
-            Vector2 newPosition = new Vector2(nextPartPosition.x - part.Find("StartPoint").position.x, 0);
+            Transform startPoint = part.Find("StartPoint");
+            Transform endPoint = part.Find("EndPoint");
 
-            Transform newPart = Instantiate(part, newPosition, transform.rotation, transform);
+            if (startPoint == null || endPoint == null)
+            {
+                Debug.LogError($"StartPoint or EndPoint missing in {part.name}");
+                return;
+            }
 
-            nextPartPosition = newPart.Find("EndPoint").position;
+            // Calculate world position for new part
+            // The StartPoint of the new part should be at nextPartPosition
+            Vector3 startPointWorldOffset = startPoint.position - part.position;
+            Vector3 newPosition = nextPartPosition - startPointWorldOffset;
+
+            Transform newPart = Instantiate(part, newPosition, Quaternion.identity, transform);
+            nextPartPosition = endPoint.position + (newPart.position - part.position);
+
+            // Alternative: simpler way
+            // nextPartPosition = newPart.Find("EndPoint").position;
         }
     }
 

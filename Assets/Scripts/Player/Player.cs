@@ -7,6 +7,7 @@ using UnityEngine.InputSystem; // Required for Unity's new Input System
 
 public class PlayerMovement : MonoBehaviour
 {
+
     #region Move Info
     [Header("Move Info")]
     [SerializeField] private float moveSpeed = 5f; // How fast the player moves horizontally
@@ -32,11 +33,7 @@ public class PlayerMovement : MonoBehaviour
 
     #region Input
     [Header("Input")]
-    // Allows assigning in Unity Inspector without making the field public
-    [SerializeField] private InputActionReference jumpAction; // Reference to the Jump input action asset
-    // Reference to the Move input action asset
-    [SerializeField] private InputActionReference moveAction;
-    [SerializeField] private InputActionReference slideAction;
+    private PlayerInputActions.PlayerControls inputActions;
     private Vector2 moveInput; // Stores the current movement direction (-1, 0, or 1 for x-axis)
     #endregion
 
@@ -44,6 +41,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Jump Settings")]
     [SerializeField] private float jumpForce = 10f; // How high the player jumps (upward force applied)
     [SerializeField] private float doubleJumpForce = 10f;
+    [SerializeField] private float rollVelocityThreshold = -25f;
     private bool canDoubleJump;
     #endregion
 
@@ -96,7 +94,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 climbOverPosition;
 
     private bool canGrabLedge = true;
-    [SerializeField] private bool isClimbing;
+    private bool isClimbing;
 
     # endregion
 
@@ -111,6 +109,8 @@ public class PlayerMovement : MonoBehaviour
     // As soon as object loads
     private void Awake()
     {
+        inputActions = new PlayerInputActions.PlayerControls();
+
         // Get components attached to the same GameObject
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
@@ -140,20 +140,14 @@ public class PlayerMovement : MonoBehaviour
     private void OnEnable()
     {
         // Enable the input actions so they start listening for input
-        jumpAction.action.Enable();
-        slideAction.action.Enable();
-        moveAction.action.Enable();
+        inputActions.Enable();
 
         // Subscribe to the performed event (triggered when input action is activated)
-        jumpAction.action.performed += OnJump; // Jump when space/button is pressed
-
-        // // Move when movement input is performed (key pressed) or canceled (key released)
-        moveAction.action.performed += OnMove;
-        moveAction.action.canceled += OnMove; // Also handle when input stops (key released)
-
+        // Jump when space/button is pressed
+        inputActions.Player.Jump.performed += OnJump;
 
         // Slide when slide input is performed
-        slideAction.action.performed += OnSlide;
+        inputActions.Player.Slide.performed += OnSlide;
     }
 
 
@@ -161,84 +155,43 @@ public class PlayerMovement : MonoBehaviour
     private void OnDisable()
     {
         // Unsubscribe from events to prevent memory leaks and null reference errors
-        jumpAction.action.performed -= OnJump;
-        moveAction.action.performed -= OnMove;
-        moveAction.action.canceled -= OnMove;
-        slideAction.action.performed -= OnSlide;
+        inputActions.Player.Jump.performed -= OnJump;
+        inputActions.Player.Slide.performed -= OnSlide;
 
         // Disable the input actions to stop listening for input
-        jumpAction.action.Disable();
-        moveAction.action.Disable();
-        slideAction.action.Disable();
+        inputActions.Disable();
     }
 
 
     // Called when the Jump action is performed (space button or controller button pressed)
     private void OnJump(InputAction.CallbackContext context)
     {
+        if (!context.performed)
+            return;
+
+        if (movementDisabled)
+            return;
+
         if (!playerUnlocked)
         {
             playerUnlocked = true;
             return;
         }
 
-        if (movementDisabled)
-            return;
-
         if (isSliding && ceilingDetected)
-        {
-            return; // Prevent jumping if there's a ceiling above
-        }
+            return;
 
         if (!isGrounded)
-            if (canDoubleJump)
-            {
-                anim.SetBool("canRoll", false);
-                canDoubleJump = false;
-                rb.linearVelocityY = doubleJumpForce;
-                return;
-            }
-            else
+        {
+            if (!canDoubleJump)
                 return;
 
-        // Check if the action was actually performed (not just started or canceled)
-        if (context.performed)
-        {
-            // Todo - Stop Sliding if player can jump not if player in narrow place
-            if (isSliding)
-            {
-                isSliding = false; // Stop sliding when jumping
-                slideCooldownTimerCounter = slideCooldownTimer; // Reset slide cooldown when jumping
-            }
-            else
-            {
-                slideCooldownTimerCounter = 0; // Allow sliding immediately if not sliding
-            }
-
-            canSliding = false; // Prevent sliding immediately after jumping
-            isGrounded = false;
-
-            // Apply upward force to make the player jump
-            // linearVelocityY sets the vertical velocity (positive = upward)
-            rb.linearVelocityY = jumpForce;
-        }
-    }
-
-
-    // // Called when Move action is performed (key pressed) or canceled (key released)
-    private void OnMove(InputAction.CallbackContext context)
-    {
-        if (movementDisabled)
-        {
-            moveInput = Vector2.zero;
+            DoubleJump();
             return;
         }
 
-        // Read the movement input value (Vector2: x = horizontal, y = vertical)
-        // For 2D platformers, we typically only use x value for left/right movement
-        moveInput = context.ReadValue<Vector2>();
+        Jump();
     }
-
 
     private void OnSlide(InputAction.CallbackContext context)
     {
@@ -261,6 +214,7 @@ public class PlayerMovement : MonoBehaviour
     {
         AnimatorController();
         SlidingCheck();
+        moveInput = inputActions.Player.Move.ReadValue<Vector2>();
     }
 
 
@@ -279,14 +233,12 @@ public class PlayerMovement : MonoBehaviour
         // Apply horizontal movement velocity
         if (isSliding)
         {
-            rb.linearVelocityX = slideSpeed;
+            SetHorizontalVelocity(slideSpeed);
         }
         else
         {
-            if (DEBUG_MODE)
-                rb.linearVelocityX = moveInput.x * moveSpeed;
-            else
-                rb.linearVelocityX = moveSpeed;
+            float direction = DEBUG_MODE ? moveInput.x : 1f;
+            SetHorizontalVelocity(direction * moveSpeed);
         }
     }
     #endregion
@@ -332,7 +284,7 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool("canClimb", isClimbing);
         anim.SetBool("isKnocked", isKnocked);
 
-        if (rb.linearVelocity.y < -25)
+        if (rb.linearVelocity.y < rollVelocityThreshold)
         {
             anim.SetBool("canRoll", true);
         }
@@ -342,6 +294,34 @@ public class PlayerMovement : MonoBehaviour
     private void RollAnimFinished()
     {
         anim.SetBool("canRoll", false);
+    }
+
+
+    private void SetHorizontalVelocity(float value)
+    {
+        rb.linearVelocity = new Vector2(
+            value,
+            rb.linearVelocity.y
+        );
+    }
+
+
+    private void Jump()
+    {
+        isGrounded = false;
+        canSliding = false;
+        isSliding = false;
+
+        rb.linearVelocityY = jumpForce;
+    }
+
+
+    private void DoubleJump()
+    {
+        canDoubleJump = false;
+        anim.SetBool("canRoll", false);
+
+        rb.linearVelocityY = doubleJumpForce;
     }
 
 
@@ -402,10 +382,15 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool("isGrounded", isGrounded);
 
         // Call AllowGrabLedge with delay
-        Invoke("AllowGrabLedge", 1f);
+        StartCoroutine(EnableLedgeGrabRoutine());
     }
 
-    private void AllowGrabLedge() => canGrabLedge = true;
+    private IEnumerator EnableLedgeGrabRoutine()
+    {
+        yield return new WaitForSeconds(1f);
+        canGrabLedge = true;
+    }
+
     # endregion
 
     private void SpeedController()
@@ -469,9 +454,19 @@ public class PlayerMovement : MonoBehaviour
     {
         movementDisabled = true;
         isDead = true;
+        rb.linearVelocity = knockbackDir;
         anim.SetBool("isDead", true);
         yield return new WaitForSeconds(.5f);
         rb.linearVelocity = Vector2.zero;
+        yield return new WaitForSeconds(.5f);
+        GameManager.instance.restartLevel();
+    }
+
+
+    public void Damage()
+    {
+        Knockback();
+        // StartCoroutine(Die());
     }
 }
 
