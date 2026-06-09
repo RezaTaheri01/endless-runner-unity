@@ -7,9 +7,11 @@ public class PlatformController : MonoBehaviour
     [SerializeField] private GameObject ledgePrefab; // Change to GameObject instead of Transform
     
     private Transform ledge;
+    
 
     void Start()
     {
+        sr.color = GameManager.instance.platformMainColor;
         headerSr.color = sr.color;
         headerSr.transform.parent = transform.parent;
         headerSr.transform.localScale = new Vector2(sr.bounds.size.x, .2f);

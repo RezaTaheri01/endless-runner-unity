@@ -66,7 +66,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private bool DEBUG_MODE = false;
     private bool isDead;
     private bool movementDisabled;
-    private bool playerUnlocked = false;
+    [HideInInspector] public bool playerUnlocked;
+
+    [HideInInspector] public bool extraLife = true;
+    private bool isRecharging = false;
     #endregion
 
     #region Slide Info
@@ -166,15 +169,16 @@ public class PlayerMovement : MonoBehaviour
     // Called when the Jump action is performed (space button or controller button pressed)
     private void OnJump(InputAction.CallbackContext context)
     {
-        if (!context.performed)
-            return;
+        // if (!context.performed)
+        //     return;
 
         if (movementDisabled)
             return;
 
         if (!playerUnlocked)
         {
-            playerUnlocked = true;
+            UI_Main.instance.SwitchMenuTo(UI_Main.instance.gameMenu);
+            GameManager.instance.UnlockPlayer();
             return;
         }
 
@@ -189,6 +193,8 @@ public class PlayerMovement : MonoBehaviour
             DoubleJump();
             return;
         }
+
+        if (ceilingDetected) return;
 
         Jump();
     }
@@ -425,11 +431,13 @@ public class PlayerMovement : MonoBehaviour
         if (!canKnocked) return;
 
         isKnocked = true;
+
         rb.linearVelocity = knockbackDir;
         StartCoroutine(invincibility());
     }
 
     private void CancelKnockback() => isKnocked = false;
+
 
     private IEnumerator invincibility()
     {
@@ -459,14 +467,38 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(.5f);
         rb.linearVelocity = Vector2.zero;
         yield return new WaitForSeconds(.5f);
-        GameManager.instance.restartLevel();
+        GameManager.instance.RestartLevel();
     }
 
 
     public void Damage()
     {
-        Knockback();
-        // StartCoroutine(Die());
+        if (!canKnocked)
+        {
+            return;
+        }
+
+        if (extraLife)
+        {
+            extraLife = false;
+            Knockback();
+            if (!isRecharging)
+            {
+                StartCoroutine(RechargeExtraLife());
+            }
+        }
+        else
+        {
+            StartCoroutine(Die());
+        }
+    }
+
+    public IEnumerator RechargeExtraLife()
+    {
+        isRecharging = true;
+        yield return new WaitForSeconds(GameManager.instance.extraLifeRechargeTime);
+        extraLife = true;
+        isRecharging = false;
     }
 }
 

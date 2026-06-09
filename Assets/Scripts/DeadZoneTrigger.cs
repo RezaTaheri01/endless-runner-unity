@@ -6,7 +6,7 @@ public class DeadZoneTrigger : MonoBehaviour
     {
      if (collision.tag == "Player")
         {
-            GameManager.instance.restartLevel();
+            GameManager.instance.RestartLevel();
         }   
     }
 }

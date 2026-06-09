@@ -3,18 +3,44 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance;
+    public PlayerMovement player;
+    [HideInInspector] public static GameManager instance;
 
-    public int coins;
+    [HideInInspector] public int coins;
 
     public Color platformColor;
+    public Color platformMainColor;
+    public Color PlayerColor = Color.white;
 
     public float ledgeBoxSize = 0.15f;
-    
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private void Awake() {
+    [HideInInspector] public float distance;
+    [HideInInspector] public float startPositionOffset;
+
+    public float extraLifeRechargeTime = 5f;
+
+    void Awake()
+    {
         instance = this;
     }
 
-    public void restartLevel() => SceneManager.LoadScene(0);
+    void Start()
+    {
+        startPositionOffset = player.transform.position.x * -1;
+    }
+
+    void FixedUpdate()
+    {
+
+        if (player.transform.position.x + startPositionOffset > distance)
+        {
+            distance = player.transform.position.x + startPositionOffset;
+        }
+    }
+
+    public void RestartLevel() => SceneManager.LoadScene(0);
+
+    public void UnlockPlayer() => player.playerUnlocked = true;
+
+    public void lockPlayer() => player.playerUnlocked = false;
+
 }
