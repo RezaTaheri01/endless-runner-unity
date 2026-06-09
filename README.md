@@ -30,7 +30,7 @@
 
 ## 🖼️ Game Preview
 
-![Runner](https://github-production-user-asset-6210df.s3.amazonaws.com/94985322/605380509-b74f9f09-14bf-43a7-9656-58de0c59b4d0.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20260609%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260609T215641Z&X-Amz-Expires=300&X-Amz-Signature=a60f3c7cd8600438c79357994f6dc7f5a778b75325b00fd8f6d82f88b7226b81&X-Amz-SignedHeaders=host&response-content-type=image%2Fpng)
+<img width="1920" height="1080" alt="Runner" src="https://github.com/user-attachments/assets/2623c6ef-a22c-4872-9553-8780277f505e" />
 
 ---
 
