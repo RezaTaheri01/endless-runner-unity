@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 
@@ -5,11 +6,18 @@ using UnityEngine;
 // 1. There is a SwitchMenuTo in player.cs >> OnJump function
 public class UI_Main : MonoBehaviour
 {
-    [SerializeField] private GameObject mainMenu;
+    public GameObject mainMenu;
     public GameObject gameMenu;
+    public GameObject pauseMenu;
+    public GameObject endGameMenu;
     [HideInInspector] public static UI_Main instance;
 
     private bool gamePaused;
+
+
+    [SerializeField] private TextMeshProUGUI lastScoreText;
+    [SerializeField] private TextMeshProUGUI highScoreText;
+    [SerializeField] private TextMeshProUGUI coinText;
 
 
     void Awake()
@@ -33,6 +41,10 @@ public class UI_Main : MonoBehaviour
         }
 
         targetMenu.SetActive(true);
+
+        coinText.text = PlayerPrefs.GetInt("TotalAmountOfCoins", 0).ToString("#,#");
+        lastScoreText.text = "Last Score: " + PlayerPrefs.GetInt("LastScore", 0).ToString("#,#") + " m";
+        highScoreText.text = "Best Score: " + PlayerPrefs.GetInt("HighScore", 0).ToString("#,#") + " m";
     }
 
     public void StartGameButton()
@@ -50,5 +62,15 @@ public class UI_Main : MonoBehaviour
             Time.timeScale = 1;
     }
 
+    public void ResumeGameButton()
+    {
+        Time.timeScale = 1;
+    }
+
     public void RestartGameButton() => GameManager.instance.RestartLevel();
+
+    public void OpenEndGameUI()
+    {
+        SwitchMenuTo(endGameMenu);
+    }
 }

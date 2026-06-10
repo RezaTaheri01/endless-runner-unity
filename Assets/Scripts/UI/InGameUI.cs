@@ -25,7 +25,7 @@ public class InGameUI : MonoBehaviour
         coins = GameManager.instance.coins;
 
         if (distance > 0)
-            distanceText.text = "Score: " + (distance).ToString("#,#") + " M";
+            distanceText.text = "Score: " + (distance).ToString("#,#") + " m";
         
         if (coins > 0)
             coinsText.text = coins.ToString("#,#");

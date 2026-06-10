@@ -1,5 +1,7 @@
 # Endless Runner
 
+Avoid obstacles and survive as long as possible. Run, slide, and jump through an endless world.
+
 > ⚠️ **Work in Progress** – This game is currently under development. Features, controls, and visuals are subject to change.
 
 
@@ -19,11 +21,13 @@
 
 ## 🎮 Controls
 
-| Action | Key(s) |
-|--------|--------|
-| Move | `←` `↑` `→` or `WASD` |
-| Slide | `Left Shift` |
-| Jump | `Space` |
+
+| Action        | Key(s)                                                                                           |
+|---------------|--------------------------------------------------------------------------------------------------|
+| **Move**      | `←` `↑` `→` or `WASD` or GamePad Left Joystick *(Debug Mode only)*                                             |
+| **Slide**     | `Left Shift`<br>GamePad: `Square` (West) or `L2 Trigger`<br>Touch: Swipe down                     |
+| **Jump**      | `Space`<br>GamePad: `X` (South)<br>Touch: Swipe up                                                 |
+| **Pause** | Esc<br>GamePad: `OPTIONS` or `Start` |​
 
 
 ---
@@ -45,3 +49,8 @@ This project is **not yet complete**.
 
 This project is based on the **[Endless Runner course on Udemy](https://www.udemy.com/course/endless-runner-alexdev/?srsltid=AfmBOoroTs18VBvAGAtTLv7Kj8OQPKdvhmbqAvCo0HGROVUBpwPoaDWh)** by Alex Dev.  
 All credit for the foundational learning goes to the course creator.
+
+Assets that i barrowed:
+* [Pixel Prototype Player](https://deadrevolver.itch.io/pixel-prototype-player-sprites)
+
+* [Dark UI](https://assetstore.unity.com/packages/2d/gui/dark-theme-ui-199010?srsltid=AfmBOop4BEuCAM9SrzD21b_JYqPx_-39388PJWd4XNoStXOaoLultrMj)

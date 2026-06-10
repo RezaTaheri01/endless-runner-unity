@@ -120,6 +120,15 @@ namespace PlayerInputActions
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PauseGame"",
+                    ""type"": ""Button"",
+                    ""id"": ""f2110028-0c9f-4667-a456-ece618709d5a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -138,17 +147,6 @@ namespace PlayerInputActions
                     ""name"": """",
                     ""id"": ""bfeb13c1-1aca-4dba-8157-b345e802e2fc"",
                     ""path"": ""<Gamepad>/buttonSouth"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Jump"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""018d4e6d-5b19-4a60-a93b-f4ad3986648e"",
-                    ""path"": ""<Touchscreen>/Press"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -298,6 +296,39 @@ namespace PlayerInputActions
                     ""action"": ""Slide"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2c16ee5c-eeca-4312-9d37-dee9a34bc43f"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Slide"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9517548f-bd83-4725-b131-806bf5eca962"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PauseGame"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""61f7d415-cb90-48b7-8723-ce82fc15531b"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PauseGame"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -309,6 +340,7 @@ namespace PlayerInputActions
             m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
             m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
             m_Player_Slide = m_Player.FindAction("Slide", throwIfNotFound: true);
+            m_Player_PauseGame = m_Player.FindAction("PauseGame", throwIfNotFound: true);
         }
 
         ~@PlayerControls()
@@ -392,6 +424,7 @@ namespace PlayerInputActions
         private readonly InputAction m_Player_Jump;
         private readonly InputAction m_Player_Move;
         private readonly InputAction m_Player_Slide;
+        private readonly InputAction m_Player_PauseGame;
         /// <summary>
         /// Provides access to input actions defined in input action map "Player".
         /// </summary>
@@ -415,6 +448,10 @@ namespace PlayerInputActions
             /// Provides access to the underlying input action "Player/Slide".
             /// </summary>
             public InputAction @Slide => m_Wrapper.m_Player_Slide;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/PauseGame".
+            /// </summary>
+            public InputAction @PauseGame => m_Wrapper.m_Player_PauseGame;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -450,6 +487,9 @@ namespace PlayerInputActions
                 @Slide.started += instance.OnSlide;
                 @Slide.performed += instance.OnSlide;
                 @Slide.canceled += instance.OnSlide;
+                @PauseGame.started += instance.OnPauseGame;
+                @PauseGame.performed += instance.OnPauseGame;
+                @PauseGame.canceled += instance.OnPauseGame;
             }
 
             /// <summary>
@@ -470,6 +510,9 @@ namespace PlayerInputActions
                 @Slide.started -= instance.OnSlide;
                 @Slide.performed -= instance.OnSlide;
                 @Slide.canceled -= instance.OnSlide;
+                @PauseGame.started -= instance.OnPauseGame;
+                @PauseGame.performed -= instance.OnPauseGame;
+                @PauseGame.canceled -= instance.OnPauseGame;
             }
 
             /// <summary>
@@ -531,6 +574,13 @@ namespace PlayerInputActions
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnSlide(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "PauseGame" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnPauseGame(InputAction.CallbackContext context);
         }
     }
 }

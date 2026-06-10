@@ -3,7 +3,7 @@ using System.ComponentModel;
 using NUnit.Framework;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem; // Required for Unity's new Input System
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -108,6 +108,18 @@ public class PlayerMovement : MonoBehaviour
     private bool canKnocked = true;
     # endregion
 
+    # region Swipe Settings 
+    [Header("Swipe Settings")]
+    [SerializeField] private float minSwipeDistance = 50f;
+    [SerializeField] private float swipeThresholdTime = 0.5f;
+
+    private Vector2 touchStartPos;
+    private Vector2 touchEndPos;
+    private float touchStartTime;
+    private bool isTouching = false;
+    # endregion
+
+
     // Called when the script instance is being loaded (before Start)
     // As soon as object loads
     private void Awake()
@@ -138,7 +150,80 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-    # region Input Manager
+    #region Touch Manager
+    private void DetectSwipe()
+    {
+        float swipeTime = Time.time - touchStartTime;
+
+        // Check if swipe was fast enough
+        if (swipeTime > swipeThresholdTime) return;
+
+        Vector2 swipeDelta = touchEndPos - touchStartPos;
+        float swipeDistance = swipeDelta.magnitude;
+
+        // Check if swipe was long enough
+        if (swipeDistance < minSwipeDistance) return;
+
+        // Determine swipe direction (vertical)
+        if (Mathf.Abs(swipeDelta.y) > Mathf.Abs(swipeDelta.x))
+        {
+            // Vertical swipe
+            if (swipeDelta.y > 0)
+            {
+                OnSwipeUp();
+            }
+            else
+            {
+                OnSwipeDown();
+            }
+        }
+    }
+
+    private void OnSwipeUp()
+    {
+        Debug.Log("Swipe UP detected!");
+        OnJumpHelper();
+    }
+
+    private void OnSwipeDown()
+    {
+        Debug.Log("Swipe DOWN detected!");
+        OnSlideHelper();
+    }
+
+    private void TrackTouchPosition()
+    {
+        if (Touchscreen.current == null) return;
+
+        var touch = Touchscreen.current.primaryTouch;
+
+        if (touch.press.isPressed)
+        {
+            if (!isTouching)
+            {
+                // Touch started
+                isTouching = true;
+                touchStartPos = touch.position.ReadValue();
+                touchStartTime = Time.time;
+            }
+            else
+            {
+                // Touch continues - update end position
+                touchEndPos = touch.position.ReadValue();
+            }
+        }
+        else if (isTouching)
+        {
+            // Touch ended - process swipe
+            isTouching = false;
+            DetectSwipe();
+        }
+    }
+
+    #endregion
+
+
+    #region Input Manager
     // Called when the object becomes enabled and active
     private void OnEnable()
     {
@@ -151,6 +236,9 @@ public class PlayerMovement : MonoBehaviour
 
         // Slide when slide input is performed
         inputActions.Player.Slide.performed += OnSlide;
+
+        inputActions.Player.PauseGame.performed += OnPauseGame;
+
     }
 
 
@@ -160,9 +248,27 @@ public class PlayerMovement : MonoBehaviour
         // Unsubscribe from events to prevent memory leaks and null reference errors
         inputActions.Player.Jump.performed -= OnJump;
         inputActions.Player.Slide.performed -= OnSlide;
+        inputActions.Player.PauseGame.performed -= OnPauseGame;
 
         // Disable the input actions to stop listening for input
         inputActions.Disable();
+    }
+
+
+    private void OnPauseGame(InputAction.CallbackContext context)
+    {
+        if (!playerUnlocked) return;
+
+        UI_Main.instance.PauseGameButton();
+
+        if (Time.timeScale == 1)
+        {
+            UI_Main.instance.SwitchMenuTo(UI_Main.instance.gameMenu);
+        }
+        else
+        {
+            UI_Main.instance.SwitchMenuTo(UI_Main.instance.pauseMenu);
+        }
     }
 
 
@@ -172,6 +278,12 @@ public class PlayerMovement : MonoBehaviour
         // if (!context.performed)
         //     return;
 
+        OnJumpHelper();
+    }
+
+
+    private void OnJumpHelper()
+    {
         if (movementDisabled)
             return;
 
@@ -199,8 +311,20 @@ public class PlayerMovement : MonoBehaviour
         Jump();
     }
 
+
     private void OnSlide(InputAction.CallbackContext context)
     {
+        // if (!context.performed)
+        //     return;
+
+        OnSlideHelper();
+    }
+
+
+    private void OnSlideHelper()
+    {
+        if (!playerUnlocked) return;
+        
         if (movementDisabled)
             return;
 
@@ -218,6 +342,7 @@ public class PlayerMovement : MonoBehaviour
     // Called once per frame. If FPS changes, the frequency of Update calls changes.
     private void Update()
     {
+        TrackTouchPosition();
         AnimatorController();
         SlidingCheck();
         moveInput = inputActions.Player.Move.ReadValue<Vector2>();
@@ -464,10 +589,12 @@ public class PlayerMovement : MonoBehaviour
         isDead = true;
         rb.linearVelocity = knockbackDir;
         anim.SetBool("isDead", true);
-        yield return new WaitForSeconds(.5f);
+
+        Time.timeScale = .6f;
+
+        yield return new WaitForSeconds(.6f);
         rb.linearVelocity = Vector2.zero;
-        yield return new WaitForSeconds(.5f);
-        GameManager.instance.RestartLevel();
+        GameManager.instance.GameEnded();
     }
 
 
