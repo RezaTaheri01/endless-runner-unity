@@ -50,7 +50,7 @@ This project is **not yet complete**.
 This project is based on the **[Endless Runner course on Udemy](https://www.udemy.com/course/endless-runner-alexdev/?srsltid=AfmBOoroTs18VBvAGAtTLv7Kj8OQPKdvhmbqAvCo0HGROVUBpwPoaDWh)** by Alex Dev.  
 All credit for the foundational learning goes to the course creator.
 
-Assets that i barrowed:
+Assets that i borrowed:
 * [Pixel Prototype Player](https://deadrevolver.itch.io/pixel-prototype-player-sprites)
 
 * [Dark UI](https://assetstore.unity.com/packages/2d/gui/dark-theme-ui-199010?srsltid=AfmBOop4BEuCAM9SrzD21b_JYqPx_-39388PJWd4XNoStXOaoLultrMj)
