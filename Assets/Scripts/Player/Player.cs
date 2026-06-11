@@ -104,6 +104,7 @@ public class PlayerMovement : MonoBehaviour
     # region Knockback Info
     [Header("Knockback Info")]
     [SerializeField] private Vector2 knockbackDir;
+    [SerializeField] private Vector2 deathBackDir;
     private bool isKnocked;
     private bool canKnocked = true;
     # endregion
@@ -225,8 +226,7 @@ public class PlayerMovement : MonoBehaviour
 
     #region Input Manager
     // Called when the object becomes enabled and active
-    private void OnEnable()
-    {
+    private void OnEnable(){
         // Enable the input actions so they start listening for input
         inputActions.Enable();
 
@@ -273,8 +273,7 @@ public class PlayerMovement : MonoBehaviour
 
 
     // Called when the Jump action is performed (space button or controller button pressed)
-    private void OnJump(InputAction.CallbackContext context)
-    {
+    private void OnJump(InputAction.CallbackContext context){
         // if (!context.performed)
         //     return;
 
@@ -282,8 +281,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-    private void OnJumpHelper()
-    {
+    private void OnJumpHelper(){
         if (movementDisabled)
             return;
 
@@ -324,7 +322,7 @@ public class PlayerMovement : MonoBehaviour
     private void OnSlideHelper()
     {
         if (!playerUnlocked) return;
-        
+
         if (movementDisabled)
             return;
 
@@ -346,6 +344,16 @@ public class PlayerMovement : MonoBehaviour
         AnimatorController();
         SlidingCheck();
         moveInput = inputActions.Player.Move.ReadValue<Vector2>();
+
+        if (Time.timeScale == 0)
+            movementDisabled = true;
+        else
+            movementDisabled = false;
+
+        if (Mathf.Abs(rb.linearVelocityY) > 0.1f && isSliding)
+        {
+            isSliding = false;
+        }
     }
 
 
@@ -375,7 +383,7 @@ public class PlayerMovement : MonoBehaviour
     #endregion
 
     private void CheckCollision()
-    {
+    {   
         isGrounded = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, groundLayer);
         ceilingDetected = Physics2D.Raycast(transform.position, Vector2.up, ceilingCheckDistance, ceilingLayer);
         isNearWall = Physics2D.OverlapBox(wallCheck.position, wallCheckSize, 0f, wallLayer);
@@ -462,6 +470,9 @@ public class PlayerMovement : MonoBehaviour
         {
             slideTimerCounter = Mathf.Max(0, slideTimerCounter - Time.deltaTime);
 
+            if (ceilingDetected)
+                Debug.Log("ceiling Detected");
+
             if (slideTimerCounter <= 0 && !ceilingDetected)
             {
                 isSliding = false;
@@ -524,6 +535,7 @@ public class PlayerMovement : MonoBehaviour
 
     # endregion
 
+
     private void SpeedController()
     {
         if (moveSpeed == maxSpeed) return;
@@ -543,6 +555,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+
     private void SpeedReset()
     {
         moveSpeed = defaultSpeed;
@@ -550,6 +563,7 @@ public class PlayerMovement : MonoBehaviour
         milestoneIncreaser = defaultMilestoneIncreaser;
         speedMilestone = transform.position.x + milestoneIncreaser;
     }
+
 
     private void Knockback()
     {
@@ -560,6 +574,7 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = knockbackDir;
         StartCoroutine(invincibility());
     }
+
 
     private void CancelKnockback() => isKnocked = false;
 
@@ -587,13 +602,21 @@ public class PlayerMovement : MonoBehaviour
     {
         movementDisabled = true;
         isDead = true;
-        rb.linearVelocity = knockbackDir;
+
+        rb.linearVelocity = deathBackDir;
         anim.SetBool("isDead", true);
 
         Time.timeScale = .6f;
 
-        yield return new WaitForSeconds(.6f);
+        yield return new WaitForSeconds(.5f);
         rb.linearVelocity = Vector2.zero;
+
+        if (!isGrounded)
+        {
+            anim.SetBool("isDeadFall", true);
+        }
+        yield return new WaitForSeconds(.2f);
+
         GameManager.instance.GameEnded();
     }
 
@@ -619,6 +642,7 @@ public class PlayerMovement : MonoBehaviour
             StartCoroutine(Die());
         }
     }
+
 
     public IEnumerator RechargeExtraLife()
     {

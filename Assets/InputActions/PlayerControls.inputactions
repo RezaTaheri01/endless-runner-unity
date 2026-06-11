@@ -68,6 +68,17 @@
                 },
                 {
                     "name": "",
+                    "id": "76759d84-9b1d-447d-9fd4-01d35dbe04e6",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "1ffe7c85-ce5e-44da-b705-00381db25a00",
                     "path": "<Gamepad>/leftStick",
                     "interactions": "",
@@ -213,6 +224,17 @@
                     "name": "",
                     "id": "2c16ee5c-eeca-4312-9d37-dee9a34bc43f",
                     "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Slide",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0c57db30-6f52-41ff-9126-b9272d3ac005",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

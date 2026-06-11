@@ -10,6 +10,7 @@ Avoid obstacles and survive as long as possible. Run, slide, and jump through an
 ## 📺 Display Support
 
 - Optimized for **16:9** aspect ratio displays
+- Work pretty fine in almost all displays
 
 ---
 
