@@ -118,6 +118,18 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 touchEndPos;
     private float touchStartTime;
     private bool isTouching = false;
+    #endregion
+
+    #region Dash Settings 
+    [Header("Dash Settings")]
+    [SerializeField] private float dashSpeed = 5f;
+    [SerializeField] private float dashTimer;
+    [SerializeField] private float dashCooldownTimer;
+    private float dashTimerCounter;
+    private float dashCooldownTimerCounter;
+    private bool isDashing = false;
+    private bool canDash = true;
+    private bool hitGroundAfterDash = true;
     # endregion
 
 
@@ -178,6 +190,14 @@ public class PlayerMovement : MonoBehaviour
                 OnSwipeDown();
             }
         }
+        else
+        {
+            // Horizontal swipe
+            if (swipeDelta.x > 0)
+            {
+                OnSwipeRight();
+            }
+        }
     }
 
     private void OnSwipeUp()
@@ -190,6 +210,13 @@ public class PlayerMovement : MonoBehaviour
     {
         Debug.Log("Swipe DOWN detected!");
         OnSlideHelper();
+    }
+
+
+    private void OnSwipeRight()
+    {
+        Debug.Log("Swipe RIGHT detected!");
+        OnDashHelper();
     }
 
     private void TrackTouchPosition()
@@ -240,6 +267,8 @@ public class PlayerMovement : MonoBehaviour
 
         inputActions.Player.PauseGame.performed += OnPauseGame;
 
+        inputActions.Player.Dash.performed += OnDash;
+
     }
 
 
@@ -250,6 +279,7 @@ public class PlayerMovement : MonoBehaviour
         inputActions.Player.Jump.performed -= OnJump;
         inputActions.Player.Slide.performed -= OnSlide;
         inputActions.Player.PauseGame.performed -= OnPauseGame;
+        inputActions.Player.Dash.performed -= OnDash;
 
         // Disable the input actions to stop listening for input
         inputActions.Disable();
@@ -336,6 +366,33 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+
+    private void OnDash(InputAction.CallbackContext context)
+    {
+        OnDashHelper();
+    }
+
+
+    private void OnDashHelper()
+    {
+        if (!playerUnlocked)
+            return;
+
+        if (movementDisabled)
+            return;
+
+        if (ceilingDetected)
+            return;
+
+
+        if (!isDashing && canDash && !isGrounded && hitGroundAfterDash)
+        {
+            hitGroundAfterDash = false;
+            isDashing = true;
+            dashTimerCounter = dashTimer;
+        }
+    }
+
     #endregion
 
 
@@ -346,6 +403,7 @@ public class PlayerMovement : MonoBehaviour
         TrackTouchPosition();
         AnimatorController();
         SlidingCheck();
+        DashingCheck();
         moveInput = inputActions.Player.Move.ReadValue<Vector2>();
 
         if (Time.timeScale == 0)
@@ -373,7 +431,11 @@ public class PlayerMovement : MonoBehaviour
         SpeedController();
 
         // Apply horizontal movement velocity
-        if (isSliding)
+        if (isDashing)
+        {
+            SetHorizontalVelocity(dashSpeed);
+        }
+        else if (isSliding)
         {
             SetHorizontalVelocity(slideSpeed);
         }
@@ -425,6 +487,7 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool("isSliding", isSliding);
         anim.SetBool("canClimb", isClimbing);
         anim.SetBool("isKnocked", isKnocked);
+        anim.SetBool("isDashing", isDashing);
 
         if (rb.linearVelocity.y < rollVelocityThreshold)
         {
@@ -491,6 +554,36 @@ public class PlayerMovement : MonoBehaviour
             if (slideCooldownTimerCounter <= 0)
             {
                 canSliding = true;
+            }
+        }
+    }
+
+    private void DashingCheck()
+    {
+        dashTimerCounter = Mathf.Max(0, dashTimerCounter - Time.deltaTime);
+        if (isDashing)
+        {
+            rb.linearVelocityY = 0; // Make dash straight forward
+
+            if (dashTimerCounter <= 0 || isNearWall)
+            {
+                isDashing = false;
+                canDash = false;
+                dashCooldownTimerCounter = dashCooldownTimer;
+                dashTimerCounter = dashTimer;
+            }
+        }
+
+        if (!canDash)
+        {
+            dashCooldownTimerCounter = Mathf.Max(0, dashCooldownTimerCounter - Time.deltaTime);
+
+            if (isGrounded && !hitGroundAfterDash)
+                hitGroundAfterDash = true;
+
+            if (dashCooldownTimerCounter <= 0 && hitGroundAfterDash)
+            {
+                canDash = true;
             }
         }
     }

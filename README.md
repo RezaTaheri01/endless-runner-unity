@@ -28,6 +28,7 @@ Avoid obstacles and survive as long as possible. Run, slide, and jump through an
 | **Move**      | `←` `↑` `→` or `WASD` or GamePad Left Joystick *(Debug Mode only)*                                             |
 | **Slide**     | `Left Shift`<br>GamePad: `Square` (West) or `L2 Trigger`<br>Touch: Swipe down                     |
 | **Jump**      | `Space`<br>GamePad: `X` (South)<br>Touch: Swipe up                                                 |
+| **Dash** | `Z`<br>GamePad: `R2 Trigger`<br>Touch: Swipe Right |​
 | **Pause** | Esc<br>GamePad: `OPTIONS` or `Start` |​
 
 
