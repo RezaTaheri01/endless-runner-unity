@@ -26631,7 +26631,8 @@ MonoBehaviour:
   maxSpeed: 10.5
   speedMultiplier: 1.1
   milestoneIncreaser: 50
-  jumpForce: 20
+  jumpForce: 18
+  doubleJumpForce: 13
   rollVelocityThreshold: -25
   groundCheckDistance: 1.5
   groundLayer:
