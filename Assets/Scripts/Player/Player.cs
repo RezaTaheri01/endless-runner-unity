@@ -40,9 +40,7 @@ public class PlayerMovement : MonoBehaviour
     #region Jump Settings
     [Header("Jump Settings")]
     [SerializeField] private float jumpForce = 10f; // How high the player jumps (upward force applied)
-    [SerializeField] private float doubleJumpForce = 10f;
     [SerializeField] private float rollVelocityThreshold = -25f;
-    private bool canDoubleJump;
     #endregion
 
     #region Ground/Platform Detection
@@ -295,16 +293,11 @@ public class PlayerMovement : MonoBehaviour
         if (isSliding && ceilingDetected)
             return;
 
-        if (!isGrounded)
-        {
-            if (!canDoubleJump)
-                return;
-
-            DoubleJump();
+        if (!isGrounded) 
             return;
-        }
 
-        if (ceilingDetected) return;
+        if (ceilingDetected) 
+            return;
 
         Jump();
     }
@@ -388,11 +381,6 @@ public class PlayerMovement : MonoBehaviour
         ceilingDetected = Physics2D.Raycast(transform.position, Vector2.up, ceilingCheckDistance, ceilingLayer);
         isNearWall = Physics2D.OverlapBox(wallCheck.position, wallCheckSize, 0f, wallLayer);
 
-        if (isGrounded)
-        {
-            canDoubleJump = true; // Reset double jump when grounded
-        }
-
         if (isNearWall)
         {
             SpeedReset();
@@ -418,7 +406,6 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool("isGrounded", isGrounded);
         anim.SetFloat("yVelocity", rb.linearVelocity.y);
         anim.SetFloat("xVelocity", Mathf.Abs(rb.linearVelocity.x));
-        anim.SetBool("canDoubleJump", canDoubleJump);
         anim.SetBool("isSliding", isSliding);
         anim.SetBool("canClimb", isClimbing);
         anim.SetBool("isKnocked", isKnocked);
@@ -453,16 +440,6 @@ public class PlayerMovement : MonoBehaviour
 
         rb.linearVelocityY = jumpForce;
     }
-
-
-    private void DoubleJump()
-    {
-        canDoubleJump = false;
-        anim.SetBool("canRoll", false);
-
-        rb.linearVelocityY = doubleJumpForce;
-    }
-
 
     private void SlidingCheck()
     {
