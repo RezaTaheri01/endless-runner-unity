@@ -40,9 +40,9 @@ public class PlayerMovement : MonoBehaviour
     #region Jump Settings
     [Header("Jump Settings")]
     [SerializeField] private float jumpForce = 10f; // How high the player jumps (upward force applied)
-    [SerializeField] private float doubleJumpForce = 10f;
     [SerializeField] private float rollVelocityThreshold = -25f;
-    private bool canDoubleJump;
+    private float doubleJumpForce = 10f;
+    private bool canDoubleJump=false;
     #endregion
 
     #region Ground/Platform Detection
@@ -226,7 +226,8 @@ public class PlayerMovement : MonoBehaviour
 
     #region Input Manager
     // Called when the object becomes enabled and active
-    private void OnEnable(){
+    private void OnEnable()
+    {
         // Enable the input actions so they start listening for input
         inputActions.Enable();
 
@@ -273,7 +274,8 @@ public class PlayerMovement : MonoBehaviour
 
 
     // Called when the Jump action is performed (space button or controller button pressed)
-    private void OnJump(InputAction.CallbackContext context){
+    private void OnJump(InputAction.CallbackContext context)
+    {
         // if (!context.performed)
         //     return;
 
@@ -281,7 +283,8 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-    private void OnJumpHelper(){
+    private void OnJumpHelper()
+    {
         if (movementDisabled)
             return;
 
@@ -297,10 +300,10 @@ public class PlayerMovement : MonoBehaviour
 
         if (!isGrounded)
         {
-            if (!canDoubleJump)
-                return;
+        //     if (!canDoubleJump)
+        //         return;
 
-            DoubleJump();
+        //     DoubleJump();
             return;
         }
 
@@ -383,15 +386,15 @@ public class PlayerMovement : MonoBehaviour
     #endregion
 
     private void CheckCollision()
-    {   
+    {
         isGrounded = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, groundLayer);
         ceilingDetected = Physics2D.Raycast(transform.position, Vector2.up, ceilingCheckDistance, ceilingLayer);
         isNearWall = Physics2D.OverlapBox(wallCheck.position, wallCheckSize, 0f, wallLayer);
 
-        if (isGrounded)
-        {
-            canDoubleJump = true; // Reset double jump when grounded
-        }
+        // if (isGrounded)
+        // {
+        //     canDoubleJump = true; // Reset double jump when grounded
+        // }
 
         if (isNearWall)
         {
