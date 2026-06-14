@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public Color platformColor;
     public Color platformMainColor;
     public Color playerColor = Color.white;
+    public Color playerDashColor = Color.red;
 
     public float ledgeBoxSize = 0.15f;
     [HideInInspector] public float distance;
