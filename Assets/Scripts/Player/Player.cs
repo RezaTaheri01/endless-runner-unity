@@ -387,6 +387,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (!isDashing && canDash && !isGrounded && hitGroundAfterDash)
         {
+            sr.color = GameManager.instance.playerDashColor;
             hitGroundAfterDash = false;
             isDashing = true;
             dashTimerCounter = dashTimer;
@@ -584,6 +585,7 @@ public class PlayerMovement : MonoBehaviour
             if (dashCooldownTimerCounter <= 0 && hitGroundAfterDash)
             {
                 canDash = true;
+                sr.color = GameManager.instance.playerColor;
             }
         }
     }
@@ -677,18 +679,35 @@ public class PlayerMovement : MonoBehaviour
 
     private IEnumerator invincibility()
     {
-        Color originalColor = sr.color;
-        Color darkerColor = new Color(sr.color.r, sr.color.g, sr.color.b, .5f);
-
         canKnocked = false;
 
         for (int i = 0; i < 12; i++)
         {
+            Color originalColor;
+            Color darkerColor;
+
+            if (hitGroundAfterDash)
+            {
+                originalColor = GameManager.instance.playerColor;
+                darkerColor = new Color(originalColor.r, originalColor.g, originalColor.b, .5f);
+            }
+            else
+            {
+                originalColor = GameManager.instance.playerDashColor;
+                darkerColor = new Color(originalColor.r, originalColor.g, originalColor.b, .5f);
+            }
+
             sr.color = darkerColor;
             yield return new WaitForSeconds(.2f);
             sr.color = originalColor;
             yield return new WaitForSeconds(.2f);
         }
+
+        // Reset to proper color based on current state
+        if (hitGroundAfterDash)
+            sr.color = GameManager.instance.playerColor;
+        else
+            sr.color = GameManager.instance.playerDashColor;
 
         canKnocked = true;
     }
