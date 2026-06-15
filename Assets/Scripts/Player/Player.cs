@@ -125,6 +125,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float dashSpeed = 5f;
     [SerializeField] private float dashTimer;
     [SerializeField] private float dashCooldownTimer;
+    [SerializeField] private Vector2 diamondHitForce = new Vector2(10, 15); // Change player velocity after hitting diamond
     private float dashTimerCounter;
     private float dashCooldownTimerCounter;
     private bool isDashing = false;
@@ -765,6 +766,15 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(GameManager.instance.extraLifeRechargeTime);
         extraLife = true;
         isRecharging = false;
+    }
+
+
+    public void rechargeDashViaDiamond(){
+        canDash = true;
+        hitGroundAfterDash = true; // technically not hitting ground it just hit a diamond
+        isDashing = false;
+        rb.linearVelocity = diamondHitForce;
+        sr.color = GameManager.instance.playerColor;
     }
 }
 
