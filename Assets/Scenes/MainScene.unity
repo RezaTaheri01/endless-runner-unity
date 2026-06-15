@@ -28315,6 +28315,7 @@ MonoBehaviour:
   - {fileID: 4777123511992506193, guid: 7e9618a533c652f49b755d06fd4d5b46, type: 3}
   - {fileID: 810906537381828669, guid: 09049b9ed1a9bbc41a682541e6ddcf34, type: 3}
   - {fileID: 2986828353296992794, guid: 99bf92dbe538dc14da0d1cb6b6bda4e2, type: 3}
+  - {fileID: 4958940618561238055, guid: 0bdb8d1d2abc1bd4583bbbbc76887973, type: 3}
   nextPartPosition: {x: 0, y: 0, z: 0}
   distanceToSpawn: 500
   distanceToDelete: 500
@@ -32015,63 +32016,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!1001 &59507741716823022
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1552543547707292813, guid: c21e076bf69ffeb4d83b6768f7b3e8fa, type: 3}
-      propertyPath: m_Name
-      value: Diamond
-      objectReference: {fileID: 0}
-    - target: {fileID: 1760293619778170000, guid: c21e076bf69ffeb4d83b6768f7b3e8fa, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 4.35
-      objectReference: {fileID: 0}
-    - target: {fileID: 1760293619778170000, guid: c21e076bf69ffeb4d83b6768f7b3e8fa, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.62
-      objectReference: {fileID: 0}
-    - target: {fileID: 1760293619778170000, guid: c21e076bf69ffeb4d83b6768f7b3e8fa, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1760293619778170000, guid: c21e076bf69ffeb4d83b6768f7b3e8fa, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1760293619778170000, guid: c21e076bf69ffeb4d83b6768f7b3e8fa, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1760293619778170000, guid: c21e076bf69ffeb4d83b6768f7b3e8fa, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1760293619778170000, guid: c21e076bf69ffeb4d83b6768f7b3e8fa, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1760293619778170000, guid: c21e076bf69ffeb4d83b6768f7b3e8fa, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1760293619778170000, guid: c21e076bf69ffeb4d83b6768f7b3e8fa, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1760293619778170000, guid: c21e076bf69ffeb4d83b6768f7b3e8fa, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: c21e076bf69ffeb4d83b6768f7b3e8fa, type: 3}
 --- !u!114 &1014162007868473189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32086,7 +32030,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlatformController
   sr: {fileID: 7765673830937700783}
   headerSr: {fileID: 155111485}
-  ledgePrefab: {fileID: 8447291337696717458, guid: 06166957d4621e848bfdb2fe8b624ef0, type: 3}
+  ledgePrefab: {fileID: 0}
+  changeHeaderColor: 1
 --- !u!222 &1534587814120423584
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -35892,4 +35837,3 @@ SceneRoots:
   - {fileID: 711005055}
   - {fileID: 391030484}
   - {fileID: 776804728}
-  - {fileID: 59507741716823022}

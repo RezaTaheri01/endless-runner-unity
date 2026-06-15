@@ -7,6 +7,8 @@ public class PlatformController : MonoBehaviour
     [SerializeField] private GameObject ledgePrefab; // Change to GameObject instead of Transform
     
     private Transform ledge;
+
+    [SerializeField] private bool changeHeaderColor=true;
     
 
     void Start()
@@ -23,7 +25,7 @@ public class PlatformController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Player")
+        if (collision.tag == "Player" && changeHeaderColor)
         {
             headerSr.color = GameManager.instance.platformColor;
         }
