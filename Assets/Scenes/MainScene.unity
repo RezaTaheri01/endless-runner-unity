@@ -11266,6 +11266,7 @@ MonoBehaviour:
   platformColor: {r: 0.35686275, g: 0.6862745, b: 0.8352941, a: 1}
   platformMainColor: {r: 0.09803922, g: 0.27058825, b: 0.5019608, a: 1}
   playerColor: {r: 1, g: 1, b: 1, a: 1}
+  playerDashColor: {r: 0.6377357, g: 0.28758273, b: 0.28758273, a: 1}
   ledgeBoxSize: 0.15
   distance: 0
   startPositionOffset: 0
