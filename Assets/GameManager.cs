@@ -97,5 +97,10 @@ public class GameManager : MonoBehaviour
         UI_Main.instance.OpenEndGameUI();
     }
     # endregion
+
+
+    public void rechargeDash(){
+        player.rechargeDashViaDiamond();
+    }
 }
 
