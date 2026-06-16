@@ -42,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpForce = 10f; // How high the player jumps (upward force applied)
     [SerializeField] private float rollVelocityThreshold = -25f;
     private float doubleJumpForce = 10f;
-    private bool canDoubleJump=false;
+    private bool canDoubleJump = false;
     #endregion
 
     #region Ground/Platform Detection
@@ -331,10 +331,10 @@ public class PlayerMovement : MonoBehaviour
 
         if (!isGrounded)
         {
-        //     if (!canDoubleJump)
-        //         return;
+            //     if (!canDoubleJump)
+            //         return;
 
-        //     DoubleJump();
+            //     DoubleJump();
             return;
         }
 
@@ -410,7 +410,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (Time.timeScale == 0)
             movementDisabled = true;
-        else
+        else if (!isDead)
             movementDisabled = false;
 
         if (Mathf.Abs(rb.linearVelocityY) > 0.1f && isSliding)
@@ -518,6 +518,7 @@ public class PlayerMovement : MonoBehaviour
         isGrounded = false;
         canSliding = false;
         isSliding = false;
+        anim.SetBool("canRoll", false);
 
         rb.linearVelocityY = jumpForce;
     }
@@ -573,6 +574,7 @@ public class PlayerMovement : MonoBehaviour
                 canDash = false;
                 dashCooldownTimerCounter = dashCooldownTimer;
                 dashTimerCounter = dashTimer;
+                anim.SetBool("canRoll", false);
             }
         }
 
@@ -717,6 +719,7 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator Die()
     {
         movementDisabled = true;
+        canKnocked = false;
         isDead = true;
 
         rb.linearVelocity = deathBackDir;
@@ -725,13 +728,13 @@ public class PlayerMovement : MonoBehaviour
         Time.timeScale = .6f;
 
         yield return new WaitForSeconds(.5f);
-        rb.linearVelocity = Vector2.zero;
+        Time.timeScale = 1f;     
 
-        if (!isGrounded)
-        {
-            anim.SetBool("isDeadFall", true);
-        }
-        yield return new WaitForSeconds(.2f);
+        yield return new WaitForSeconds(.5f);
+        rb.linearVelocityX = 0f;
+
+        yield return new WaitForSeconds(1f);
+        rb.linearVelocityY = 0f;
 
         GameManager.instance.GameEnded();
     }
@@ -769,7 +772,8 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-    public void rechargeDashViaDiamond(){
+    public void rechargeDashViaDiamond()
+    {
         canDash = true;
         hitGroundAfterDash = true; // technically not hitting ground it just hit a diamond
         isDashing = false;
