@@ -165,17 +165,6 @@ namespace PlayerInputActions
                 },
                 {
                     ""name"": """",
-                    ""id"": ""76759d84-9b1d-447d-9fd4-01d35dbe04e6"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Jump"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""1ffe7c85-ce5e-44da-b705-00381db25a00"",
                     ""path"": ""<Gamepad>/leftStick"",
                     ""interactions"": """",
