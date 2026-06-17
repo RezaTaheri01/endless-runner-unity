@@ -36,7 +36,10 @@ Avoid obstacles and survive as long as possible. Run, slide, and jump through an
 
 ## 🖼️ Game Preview
 
-<img width="1920" height="1080" alt="Runner" src="https://github.com/user-attachments/assets/2623c6ef-a22c-4872-9553-8780277f505e" />
+<img width="768" height="400" alt="Image" src="https://github.com/user-attachments/assets/a180422e-9189-4c1d-b9f3-a1b33ae3373c" />
+<img width="768" height="400" alt="Image" src="https://github.com/user-attachments/assets/c1be4bb3-e1b4-4f66-a5c9-1b69b31e67fd" />
+<img width="768" height="400" alt="Image" src="https://github.com/user-attachments/assets/4a326b43-ad22-4398-8a37-946af2459a08" />
+
 
 ---
 
