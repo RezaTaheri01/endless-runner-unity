@@ -506,6 +506,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void SetHorizontalVelocity(float value)
     {
+        // prevent setting velocity if the Rigidbody is static (e.g., during ledge climbing)
+        // No warning of can't set velocity on static body
+        // if (rb.bodyType == RigidbodyType2D.Static) return;
+
         rb.linearVelocity = new Vector2(
             value,
             rb.linearVelocity.y
@@ -561,38 +565,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void DashingCheck()
-    {
-        dashTimerCounter = Mathf.Max(0, dashTimerCounter - Time.deltaTime);
-        if (isDashing)
-        {
-            rb.linearVelocityY = 0; // Make dash straight forward
-
-            if (dashTimerCounter <= 0 || isNearWall)
-            {
-                isDashing = false;
-                canDash = false;
-                dashCooldownTimerCounter = dashCooldownTimer;
-                dashTimerCounter = dashTimer;
-                anim.SetBool("canRoll", false);
-            }
-        }
-
-        if (!canDash)
-        {
-            dashCooldownTimerCounter = Mathf.Max(0, dashCooldownTimerCounter - Time.deltaTime);
-
-            if (isGrounded && !hitGroundAfterDash)
-                hitGroundAfterDash = true;
-
-            if (dashCooldownTimerCounter <= 0 && hitGroundAfterDash)
-            {
-                canDash = true;
-                sr.color = GameManager.instance.playerColor;
-            }
-        }
-    }
-
 
     # region Ledge Climb
     private void LedgeClimbCheck()
@@ -634,9 +606,10 @@ public class PlayerMovement : MonoBehaviour
         canGrabLedge = true;
     }
 
-    # endregion
+    #endregion
 
 
+    #region Speed Controller
     private void SpeedController()
     {
         if (moveSpeed == maxSpeed) return;
@@ -664,8 +637,10 @@ public class PlayerMovement : MonoBehaviour
         milestoneIncreaser = defaultMilestoneIncreaser;
         speedMilestone = transform.position.x + milestoneIncreaser;
     }
+    #endregion
 
 
+    #region Damage and Knockback
     private void Knockback()
     {
         if (!canKnocked) return;
@@ -728,7 +703,7 @@ public class PlayerMovement : MonoBehaviour
         Time.timeScale = .6f;
 
         yield return new WaitForSeconds(.5f);
-        Time.timeScale = 1f;     
+        Time.timeScale = 1f;
 
         yield return new WaitForSeconds(.5f);
         rb.linearVelocityX = 0f;
@@ -770,7 +745,41 @@ public class PlayerMovement : MonoBehaviour
         extraLife = true;
         isRecharging = false;
     }
+    #endregion
 
+
+    # region Dash/Double Dash
+    private void DashingCheck()
+    {
+        dashTimerCounter = Mathf.Max(0, dashTimerCounter - Time.deltaTime);
+        if (isDashing)
+        {
+            rb.linearVelocityY = 0; // Make dash straight forward
+
+            if (dashTimerCounter <= 0 || isNearWall)
+            {
+                isDashing = false;
+                canDash = false;
+                dashCooldownTimerCounter = dashCooldownTimer;
+                dashTimerCounter = dashTimer;
+                anim.SetBool("canRoll", false);
+            }
+        }
+
+        if (!canDash)
+        {
+            dashCooldownTimerCounter = Mathf.Max(0, dashCooldownTimerCounter - Time.deltaTime);
+
+            if (isGrounded && !hitGroundAfterDash)
+                hitGroundAfterDash = true;
+
+            if (dashCooldownTimerCounter <= 0 && hitGroundAfterDash)
+            {
+                canDash = true;
+                sr.color = GameManager.instance.playerColor;
+            }
+        }
+    }
 
     public void rechargeDashViaDiamond()
     {
@@ -780,5 +789,7 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = diamondHitForce;
         sr.color = GameManager.instance.playerColor;
     }
+
+    #endregion
 }
 

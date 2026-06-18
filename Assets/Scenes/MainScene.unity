@@ -7323,7 +7323,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.328888, y: -1.3000004, z: 0}
+  m_LocalPosition: {x: 9.822222, y: -1.3000004, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -10408,8 +10408,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -33.740734}
-  m_SizeDelta: {x: 280.8216, y: 10.6008}
+  m_AnchoredPosition: {x: 0, y: -34.25001}
+  m_SizeDelta: {x: 280.8216, y: 11.6194}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &654233732
 MonoBehaviour:
@@ -10424,7 +10424,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.966585, g: 1, b: 0.3075471, a: 1}
+  m_Color: {r: 0.35686275, g: 0.6862745, b: 0.8352942, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -11263,14 +11263,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   player: {fileID: 1805903023}
   coins: 0
-  platformColor: {r: 0.35686275, g: 0.6862745, b: 0.8352941, a: 1}
-  platformMainColor: {r: 0.09803922, g: 0.27058825, b: 0.5019608, a: 1}
-  playerColor: {r: 1, g: 1, b: 1, a: 1}
-  playerDashColor: {r: 0.6377357, g: 0.28758273, b: 0.28758273, a: 1}
   ledgeBoxSize: 0.15
   distance: 0
   startPositionOffset: 0
   extraLifeRechargeTime: 20
+  platformColor: {r: 0.35686275, g: 0.6862745, b: 0.8352941, a: 1}
+  platformMainColor: {r: 0.09803922, g: 0.27058825, b: 0.5019608, a: 1}
+  playerColor: {r: 1, g: 1, b: 1, a: 1}
+  playerDashColor: {r: 0.5169811, g: 0, b: 0, a: 1}
 --- !u!4 &711005055
 Transform:
   m_ObjectHideFlags: 0
@@ -12382,7 +12382,7 @@ Transform:
   m_GameObject: {fileID: 755742180}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.328888, y: -1.3000004, z: 0}
+  m_LocalPosition: {x: 9.822222, y: -1.3000004, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -15930,7 +15930,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.050980393, g: 0.16470589, b: 0.31764707, a: 1}
+  m_Color: {r: 0.08627451, g: 0.27058825, b: 0.5019608, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -25628,7 +25628,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1738599660
 RectTransform:
   m_ObjectHideFlags: 0
@@ -25646,7 +25646,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -172, y: -20}
+  m_AnchoredPosition: {x: -18, y: -20}
   m_SizeDelta: {x: 128, y: 128}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1738599661
@@ -32132,23 +32132,39 @@ MonoBehaviour:
   coinText: {fileID: 272999125}
   notifyText: {fileID: 1534587815183700319}
   platformColor:
-  - color: {r: 0.18490559, g: 0, b: 0, a: 1}
-    price: 5
+  - color: {r: 0.35686275, g: 0.6862745, b: 0.8352941, a: 1}
+    price: 50
+  - color: {r: 0.8113208, g: 0.8113208, b: 0.16379493, a: 1}
+    price: 100
   - color: {r: 1, g: 0.3150943, b: 0.3150943, a: 1}
-    price: 10
-  - color: {r: 0.089362755, g: 0.2905661, b: 0.17114905, a: 1}
-    price: 15
+    price: 150
+  - color: {r: 0.06145245, g: 0.5169811, b: 0.24902304, a: 1}
+    price: 200
+  - color: {r: 0.14343172, g: 0.9622642, b: 0.7123797, a: 1}
+    price: 200
+  - color: {r: 0.83396226, g: 0.18724804, b: 0.5314305, a: 1}
+    price: 200
+  - color: {r: 0.3901861, g: 0.82641506, b: 0.1917906, a: 1}
+    price: 200
   platformColorButtonPrefab: {fileID: 3174279265305392652, guid: 5dbfd453c449294429fa6870fd3611f3, type: 3}
   platformColorParent: {fileID: 2052341904}
   platformDisplay: {fileID: 654233732}
   platformMainDisplay: {fileID: 996904475}
   playerColor:
-  - color: {r: 0.5849056, g: 0, b: 0, a: 1}
-    price: 5
+  - color: {r: 1, g: 1, b: 1, a: 1}
+    price: 191
+  - color: {r: 0.645283, g: 0.6367542, b: 0.14488423, a: 1}
+    price: 434
   - color: {r: 1, g: 0.5943396, b: 0.5943396, a: 1}
-    price: 10
-  - color: {r: 0.20188677, g: 0.387675, b: 1, a: 1}
-    price: 15
+    price: 282
+  - color: {r: 0.24168731, g: 0.37927017, b: 0.82641506, a: 1}
+    price: 414
+  - color: {r: 0.05480236, g: 0.6754716, b: 0.6041, a: 1}
+    price: 252
+  - color: {r: 0.138056, g: 0.7735849, b: 0.11530785, a: 1}
+    price: 232
+  - color: {r: 0.6528301, g: 0.08745461, b: 0.4027808, a: 1}
+    price: 181
   playerColorButtonPrefab: {fileID: 6911232691662808541, guid: 5505ff2fa3348ac42bd8a32f9fa0f084, type: 3}
   playerColorParent: {fileID: 1534587814909147943}
   playerDisplay: {fileID: 2058221002}

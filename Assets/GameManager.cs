@@ -8,16 +8,19 @@ public class GameManager : MonoBehaviour
 
     [HideInInspector] public int coins;
 
-    public Color platformColor;
-    public Color platformMainColor;
-    public Color playerColor = Color.white;
-    public Color playerDashColor = Color.red;
-
     public float ledgeBoxSize = 0.15f;
     [HideInInspector] public float distance;
     [HideInInspector] public float startPositionOffset;
 
     public float extraLifeRechargeTime = 5f;
+
+    #region Colors
+    [Header("Colors")]
+    public Color platformColor;
+    public Color platformMainColor;
+    public Color playerColor = Color.white;
+    public Color playerDashColor = Color.red;
+    #endregion
 
     void Awake()
     {
@@ -29,6 +32,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         LoadColor();
+        LoadColorPlatform();
         startPositionOffset = player.transform.position.x * -1;
     }
 
@@ -50,6 +54,7 @@ public class GameManager : MonoBehaviour
     public void UnlockPlayer() => player.playerUnlocked = true;
 
     public void lockPlayer() => player.playerUnlocked = false;
+
 
     #region Save and Load
 
@@ -76,6 +81,15 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetFloat("ColorB", b);
     }
 
+
+    public void SaveColorPlatform(float r, float g, float b)
+    {
+        PlayerPrefs.SetFloat("ColorPR", r);
+        PlayerPrefs.SetFloat("ColorPG", g);
+        PlayerPrefs.SetFloat("ColorPB", b);
+    }
+
+
     private void LoadColor()
     {
         SpriteRenderer sr = player.GetComponent<SpriteRenderer>();
@@ -90,16 +104,28 @@ public class GameManager : MonoBehaviour
     }
 
 
+    private void LoadColorPlatform()
+    {
+        Color newColor = new Color(PlayerPrefs.GetFloat("ColorPR", platformColor.r),
+                                   PlayerPrefs.GetFloat("ColorPG", platformColor.g),
+                                   PlayerPrefs.GetFloat("ColorPB", platformColor.b),
+                                   PlayerPrefs.GetFloat("ColorA", 1));
+
+        platformColor = newColor;
+    }
+
+
     public void GameEnded()
     {
         player.playerUnlocked = false;
         SaveInfo();
         UI_Main.instance.OpenEndGameUI();
     }
-    # endregion
+    #endregion
 
 
-    public void rechargeDash(){
+    public void rechargeDash()
+    {
         player.rechargeDashViaDiamond();
     }
 }
