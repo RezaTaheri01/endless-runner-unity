@@ -7323,7 +7323,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 9.822222, y: -1.3000004, z: 0}
+  m_LocalPosition: {x: 7.328888, y: -1.3000004, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -11270,7 +11270,7 @@ MonoBehaviour:
   platformColor: {r: 0.35686275, g: 0.6862745, b: 0.8352941, a: 1}
   platformMainColor: {r: 0.09803922, g: 0.27058825, b: 0.5019608, a: 1}
   playerColor: {r: 1, g: 1, b: 1, a: 1}
-  playerDashColor: {r: 0.5169811, g: 0, b: 0, a: 1}
+  playerDashColor: {r: 0.6528301, g: 0.39292982, b: 0.39292982, a: 1}
 --- !u!4 &711005055
 Transform:
   m_ObjectHideFlags: 0
@@ -12382,7 +12382,7 @@ Transform:
   m_GameObject: {fileID: 755742180}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 9.822222, y: -1.3000004, z: 0}
+  m_LocalPosition: {x: 7.328888, y: -1.3000004, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

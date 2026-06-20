@@ -508,7 +508,7 @@ public class PlayerMovement : MonoBehaviour
     {
         // prevent setting velocity if the Rigidbody is static (e.g., during ledge climbing)
         // No warning of can't set velocity on static body
-        // if (rb.bodyType == RigidbodyType2D.Static) return;
+        if (rb.bodyType == RigidbodyType2D.Static) return;
 
         rb.linearVelocity = new Vector2(
             value,
@@ -571,6 +571,13 @@ public class PlayerMovement : MonoBehaviour
     {
         if (ledgeDetected && canGrabLedge && !isClimbing)
         {
+            rb.linearVelocity = Vector2.zero;
+            if (!canDash){
+                canDash = true;
+                hitGroundAfterDash = true;
+                sr.color = GameManager.instance.playerColor;
+            }
+
             movementDisabled = true;
             canGrabLedge = false;
             isClimbing = true;
