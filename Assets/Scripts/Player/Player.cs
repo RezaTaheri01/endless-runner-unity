@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.ComponentModel;
 using NUnit.Framework;
@@ -69,6 +70,7 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector] public bool playerUnlocked;
 
     [HideInInspector] public bool extraLife = true;
+    [HideInInspector] public int extraLifeCount = 1;
     private bool isRecharging = false;
     #endregion
 
@@ -731,12 +733,19 @@ public class PlayerMovement : MonoBehaviour
 
         if (extraLife)
         {
-            extraLife = false;
-            Knockback();
-            if (!isRecharging)
-            {
-                StartCoroutine(RechargeExtraLife());
+            extraLifeCount = Math.Max(0, extraLifeCount - 1);
+
+            if (extraLifeCount == 0){
+                extraLife = false;
+                
+                if (!isRecharging)
+                {
+                    StartCoroutine(RechargeExtraLife());
+                }
             }
+
+            Knockback();
+
         }
         else
         {
@@ -745,11 +754,12 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-    public IEnumerator RechargeExtraLife()
+    private IEnumerator RechargeExtraLife()
     {
         isRecharging = true;
         yield return new WaitForSeconds(GameManager.instance.extraLifeRechargeTime);
         extraLife = true;
+        extraLifeCount += 1;
         isRecharging = false;
     }
     #endregion

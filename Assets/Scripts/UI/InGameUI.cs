@@ -7,6 +7,7 @@ public class InGameUI : MonoBehaviour
     private PlayerMovement player;
     [SerializeField] private TextMeshProUGUI distanceText;
     [SerializeField] private TextMeshProUGUI coinsText;
+    [SerializeField] private TextMeshProUGUI heartCountText;
     [SerializeField] private Image emptyHeart;
     [SerializeField] private Image fullHeart;
 
@@ -32,5 +33,6 @@ public class InGameUI : MonoBehaviour
 
         emptyHeart.enabled = !player.extraLife;
         fullHeart.enabled = player.extraLife;
+        heartCountText.text = player.extraLifeCount.ToString();
     }
 }
